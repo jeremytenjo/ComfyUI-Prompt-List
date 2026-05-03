@@ -10,6 +10,10 @@ class ComfyUIPromptList:
                     "STRING",
                     {"multiline": True, "dynamicPrompts": True},
                 ),
+                "divider": (
+                    "STRING",
+                    {"default": "**"},
+                ),
             }
         }
 
@@ -18,13 +22,14 @@ class ComfyUIPromptList:
     FUNCTION = "split"
     CATEGORY = "utils/string"
 
-    def split(self, text: str) -> Tuple[str, str]:
+    def split(self, text: str, divider: str = "**") -> Tuple[str, str]:
         normalized = (text or "").replace("\r\n", "\n").replace("\r", "\n")
-        items = [chunk.strip() for chunk in normalized.split("***")]
+        active_divider = divider if divider else "**"
+        items = [chunk.strip() for chunk in normalized.split(active_divider)]
         items = [item for item in items if item]
 
         positive = items[0] if len(items) > 0 else ""
-        negative = "***".join(items[1:]) if len(items) > 1 else ""
+        negative = active_divider.join(items[1:]) if len(items) > 1 else ""
 
         return (positive, negative)
 
