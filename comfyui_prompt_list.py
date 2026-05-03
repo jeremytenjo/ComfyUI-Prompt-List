@@ -13,21 +13,20 @@ class ComfyUIPromptList:
             }
         }
 
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("prompts",)
-    OUTPUT_IS_LIST = (True,)
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("positive", "negative")
     FUNCTION = "split"
     CATEGORY = "utils/string"
 
-    def split(self, text: str) -> Tuple[list[str]]:
+    def split(self, text: str) -> Tuple[str, str]:
         normalized = (text or "").replace("\r\n", "\n").replace("\r", "\n")
         items = [chunk.strip() for chunk in normalized.split("***")]
         items = [item for item in items if item]
 
-        if not items:
-            items = [""]
+        positive = items[0] if len(items) > 0 else ""
+        negative = "***".join(items[1:]) if len(items) > 1 else ""
 
-        return (items,)
+        return (positive, negative)
 
 
 NODE_CLASS_MAPPINGS = {
@@ -35,5 +34,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ComfyUI-Prompt-List": "ComfyUI-Prompt-List",
+    "ComfyUI-Prompt-List": "PromptList",
 }

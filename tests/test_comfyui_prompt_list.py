@@ -19,34 +19,39 @@ def test_input_types_contains_only_text():
 
 def test_split_basic_triple_star_separator():
     node = ComfyUIPromptList()
-    (result,) = node.split("a***b***c")
-    assert result == ["a", "b", "c"]
+    positive, negative = node.split("a***b")
+    assert positive == "a"
+    assert negative == "b"
 
 
 def test_split_preserves_multiline_chunks():
     node = ComfyUIPromptList()
-    (result,) = node.split("first line\nsecond line***third line\nfourth line")
-    assert result == ["first line\nsecond line", "third line\nfourth line"]
+    positive, negative = node.split("first line\nsecond line***third line\nfourth line")
+    assert positive == "first line\nsecond line"
+    assert negative == "third line\nfourth line"
 
 
 def test_split_normalizes_windows_newlines_and_trims():
     node = ComfyUIPromptList()
-    (result,) = node.split("  one\r\nline  ***\r\n\r\n  two\rthree  ")
-    assert result == ["one\nline", "two\nthree"]
+    positive, negative = node.split("  one\r\nline  ***\r\n\r\n  two\rthree  ")
+    assert positive == "one\nline"
+    assert negative == "two\nthree"
 
 
-def test_split_removes_empty_chunks():
+def test_split_extra_chunks_are_kept_in_negative():
     node = ComfyUIPromptList()
-    (result,) = node.split("*** alpha ***   *** beta ***")
-    assert result == ["alpha", "beta"]
+    positive, negative = node.split("alpha***beta***gamma")
+    assert positive == "alpha"
+    assert negative == "beta***gamma"
 
 
-def test_split_empty_input_falls_back_to_single_empty_string():
+def test_split_empty_input_falls_back_to_empty_strings():
     node = ComfyUIPromptList()
-    (result,) = node.split("   \r\n  ***   \n")
-    assert result == [""]
+    positive, negative = node.split("   \r\n  ***   \n")
+    assert positive == ""
+    assert negative == ""
 
 
 def test_node_mappings_export_expected_values():
     assert NODE_CLASS_MAPPINGS["ComfyUI-Prompt-List"] is ComfyUIPromptList
-    assert NODE_DISPLAY_NAME_MAPPINGS["ComfyUI-Prompt-List"] == "ComfyUI-Prompt-List"
+    assert NODE_DISPLAY_NAME_MAPPINGS["ComfyUI-Prompt-List"] == "PromptList"
