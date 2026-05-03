@@ -64,3 +64,16 @@ negative: neg A
 positive: prompt B
 negative: neg B
 ```
+
+## Multiple Image Generation
+
+`PromptList` outputs `STRING` lists (`positive` and `negative`) and marks them as list outputs, so ComfyUI iterates downstream nodes once per list item.
+
+That means one queue run can generate multiple images:
+
+1. Put multiple prompt blocks in `text`
+2. Separate blocks with the divider (`**` by default)
+3. Connect `positive` and `negative` to your `CLIP Text Encode` nodes
+4. Queue once
+
+ComfyUI will process each block as its own prompt pair, producing one image result per block (with your normal batch/sampler settings applied per run).
