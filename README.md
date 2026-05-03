@@ -22,6 +22,28 @@ It outputs prompt lists so downstream nodes run once per block (multi-image gene
    - `positive` (`STRING` list): one entry per split block
    - `negative` (`STRING` list): parsed per block (or empty when omitted)
 
+Single plain string example:
+
+```text
+cinematic portrait of a woman, warm sunlight, high detail
+```
+
+Outputs:
+- `positive`: `["cinematic portrait of a woman, warm sunlight, high detail"]`
+- `negative`: `[""]`
+
+Multiple plain strings example:
+
+```text
+plain prompt A
+**
+plain prompt B
+```
+
+Outputs:
+- `positive`: `["plain prompt A", "plain prompt B"]`
+- `negative`: `["", ""]`
+
 Per-block format:
 
 ```text
@@ -43,17 +65,7 @@ Outputs:
 - `positive`: `["prompt A", "prompt B"]`
 - `negative`: `["neg A", "neg B"]`
 
-If a block does not include `positive:`/`negative:` labels, the full block is treated as positive and negative is empty:
-
-```text
-plain prompt A
-**
-plain prompt B
-```
-
-Outputs:
-- `positive`: `["plain prompt A", "plain prompt B"]`
-- `negative`: `["", ""]`
+If a block does not include `positive:`/`negative:` labels, the full block is treated as positive and negative is empty.
 
 Custom divider example (`***`):
 
