@@ -1,10 +1,8 @@
 # ComfyUI Prompt List
 
-Simple ComfyUI custom node that splits one text input into:
-- `positive`
-- `negative`
+Simple ComfyUI custom node that splits text into multiple prompt blocks using a configurable divider (default: `**`).
 
-using a configurable divider string (default: `**`).
+It outputs prompt lists so downstream nodes run once per block (multi-image generation in one queue run).
 
 ## Install
 
@@ -21,25 +19,48 @@ using a configurable divider string (default: `**`).
    - `text`: your full prompt text
    - `divider`: separator string (default `**`)
 3. Connect outputs:
-   - `positive`: text before the first divider
-   - `negative`: text after the first divider (remaining parts are joined back with the same divider)
+   - `positive` (`STRING` list): one entry per split block
+   - `negative` (`STRING` list): parsed per block (or empty when omitted)
 
-Example with default divider:
+Per-block format:
 
 ```text
-cinematic portrait ** lowres, blurry
+positive: <prompt>
+negative: <prompt>
+```
+
+Split multiple blocks using the divider (default `**`):
+
+```text
+positive: prompt A
+negative: neg A
+**
+positive: prompt B
+negative: neg B
 ```
 
 Outputs:
-- `positive`: `cinematic portrait`
-- `negative`: `lowres, blurry`
+- `positive`: `["prompt A", "prompt B"]`
+- `negative`: `["neg A", "neg B"]`
 
-Example with custom divider `***`:
+If a block does not include `positive:`/`negative:` labels, the full block is treated as positive and negative is empty:
 
 ```text
-cinematic portrait *** lowres *** blurry
+plain prompt A
+**
+plain prompt B
 ```
 
 Outputs:
-- `positive`: `cinematic portrait`
-- `negative`: `lowres***blurry`
+- `positive`: `["plain prompt A", "plain prompt B"]`
+- `negative`: `["", ""]`
+
+Custom divider example (`***`):
+
+```text
+positive: prompt A
+negative: neg A
+***
+positive: prompt B
+negative: neg B
+```
