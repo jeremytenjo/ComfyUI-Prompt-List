@@ -15,6 +15,7 @@ def test_input_types_contains_text_and_divider():
     required = input_types["required"]
 
     assert list(required.keys()) == ["text", "divider"]
+    assert required["text"][1]["forceInput"] is True
     assert required["divider"][1]["default"] == "**"
 
 

@@ -8,7 +8,7 @@ class ComfyUIPromptList:
             "required": {
                 "text": (
                     "STRING",
-                    {"multiline": True, "dynamicPrompts": True},
+                    {"multiline": True, "dynamicPrompts": True, "forceInput": True},
                 ),
                 "divider": (
                     "STRING",
