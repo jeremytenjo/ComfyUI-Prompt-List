@@ -13,12 +13,9 @@ from comfyui_prompt_list import (  # noqa: E402
 def test_input_types_contains_text_and_divider():
     input_types = ComfyUIPromptList.INPUT_TYPES()
     required = input_types["required"]
-    optional = input_types["optional"]
 
     assert list(required.keys()) == ["text", "divider"]
     assert required["divider"][1]["default"] == "**"
-    assert list(optional.keys()) == ["prompts"]
-    assert optional["prompts"][1]["forceInput"] is True
 
 
 def test_split_basic_default_separator():
@@ -100,13 +97,6 @@ def test_split_without_labels_defaults_to_positive_only():
     node = ComfyUIPromptList()
     positive, negative = node.split("plain prompt text")
     assert positive == ["plain prompt text"]
-    assert negative == [""]
-
-
-def test_split_prefers_connected_text_input_when_provided():
-    node = ComfyUIPromptList()
-    positive, negative = node.split("widget value", prompts="socket value")
-    assert positive == ["socket value"]
     assert negative == [""]
 
 

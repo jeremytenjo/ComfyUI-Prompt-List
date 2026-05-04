@@ -1,4 +1,4 @@
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple
 
 
 class ComfyUIPromptList:
@@ -14,12 +14,6 @@ class ComfyUIPromptList:
                     "STRING",
                     {"default": "**"},
                 ),
-            },
-            "optional": {
-                "prompts": (
-                    "STRING",
-                    {"forceInput": True},
-                )
             },
         }
 
@@ -71,12 +65,8 @@ class ComfyUIPromptList:
 
         return (block.strip(), "")
 
-    def split(
-        self, text: str, divider: str = "**", **kwargs: Any
-    ) -> Tuple[list[str], list[str]]:
-        text_input = kwargs.get("prompts")
-        source_text = text if text_input is None else text_input
-        normalized = (source_text or "").replace("\r\n", "\n").replace("\r", "\n")
+    def split(self, text: str, divider: str = "**") -> Tuple[list[str], list[str]]:
+        normalized = (text or "").replace("\r\n", "\n").replace("\r", "\n")
         active_divider = divider if divider else "**"
         items = [chunk.strip() for chunk in normalized.split(active_divider)]
         items = [item for item in items if item]
