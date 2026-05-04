@@ -106,4 +106,4 @@ def test_outputs_are_marked_as_lists():
 
 def test_node_mappings_export_expected_values():
     assert NODE_CLASS_MAPPINGS["ComfyUI-Prompt-List"] is ComfyUIPromptList
-    assert NODE_DISPLAY_NAME_MAPPINGS["ComfyUI-Prompt-List"] == "PromptList"
+    assert NODE_DISPLAY_NAME_MAPPINGS["ComfyUI-Prompt-List"] == "Prompts"
