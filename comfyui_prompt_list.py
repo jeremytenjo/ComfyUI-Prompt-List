@@ -82,9 +82,9 @@ class ComfyUIPromptList:
 
 
 NODE_CLASS_MAPPINGS = {
-    "ComfyUI-Prompt-List": ComfyUIPromptList,
+    "ComfyUI-Prompts": ComfyUIPromptList,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ComfyUI-Prompt-List": "Prompts",
+    "ComfyUI-Prompts": "Prompts",
 }

@@ -1,5 +1,5 @@
 {
-  "name": "comfyui-prompt-list",
+  "name": "comfyui-prompts",
   "scripts": {
     "dev": "cd ../.. && COMFYUI_DTD_HOT_RELOAD=1 python3 main.py --enable-manager"
   }
