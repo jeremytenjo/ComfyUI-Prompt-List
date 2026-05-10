@@ -15,6 +15,12 @@ class ComfyUIPromptList:
                     {"default": "**"},
                 ),
             },
+            "optional": {
+                "default_negative_prompt": (
+                    "STRING",
+                    {"default": ""},
+                ),
+            },
         }
 
     RETURN_TYPES = ("STRING", "STRING")
@@ -65,18 +71,24 @@ class ComfyUIPromptList:
 
         return (block.strip(), "")
 
-    def split(self, text: str, divider: str = "**") -> Tuple[list[str], list[str]]:
+    def split(
+        self,
+        text: str,
+        divider: str = "**",
+        default_negative_prompt: str = "",
+    ) -> Tuple[list[str], list[str]]:
         normalized = (text or "").replace("\r\n", "\n").replace("\r", "\n")
         active_divider = divider if divider else "**"
         items = [chunk.strip() for chunk in normalized.split(active_divider)]
         items = [item for item in items if item]
 
         if not items:
-            return ([""], [""])
+            return ([""], [default_negative_prompt or ""])
 
         parsed = [self._parse_block(item) for item in items]
         positive = [pair[0] for pair in parsed]
-        negative = [pair[1] for pair in parsed]
+        fallback_negative = default_negative_prompt or ""
+        negative = [pair[1] if pair[1] else fallback_negative for pair in parsed]
 
         return (positive, negative)
 

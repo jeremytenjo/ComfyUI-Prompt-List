@@ -13,9 +13,12 @@ from comfyui_prompt_list import (  # noqa: E402
 def test_input_types_contains_text_and_divider():
     input_types = ComfyUIPromptList.INPUT_TYPES()
     required = input_types["required"]
+    optional = input_types["optional"]
 
     assert list(required.keys()) == ["text", "divider"]
     assert required["divider"][1]["default"] == "**"
+    assert list(optional.keys()) == ["default_negative_prompt"]
+    assert optional["default_negative_prompt"][1]["default"] == ""
 
 
 def test_split_basic_default_separator():
@@ -60,6 +63,13 @@ def test_split_supports_custom_divider():
     assert negative == ["", "", ""]
 
 
+def test_split_applies_default_negative_to_unlabeled_blocks():
+    node = ComfyUIPromptList()
+    positive, negative = node.split("a**b", default_negative_prompt="bad, lowres")
+    assert positive == ["a", "b"]
+    assert negative == ["bad, lowres", "bad, lowres"]
+
+
 def test_split_parses_labeled_positive_negative():
     node = ComfyUIPromptList()
     text = "positive: cat photo\nnegative: blurry, lowres"
@@ -91,6 +101,22 @@ def test_split_labeled_blocks_work_across_multiple_items():
     positive, negative = node.split(text)
     assert positive == ["prompt a", "prompt b"]
     assert negative == ["neg a", "neg b"]
+
+
+def test_split_labeled_negative_preserved_when_non_empty():
+    node = ComfyUIPromptList()
+    text = "positive: prompt\nnegative: custom"
+    positive, negative = node.split(text, default_negative_prompt="bad, lowres")
+    assert positive == ["prompt"]
+    assert negative == ["custom"]
+
+
+def test_split_labeled_empty_negative_uses_default():
+    node = ComfyUIPromptList()
+    text = "positive: prompt\nnegative:"
+    positive, negative = node.split(text, default_negative_prompt="bad, lowres")
+    assert positive == ["prompt"]
+    assert negative == ["bad, lowres"]
 
 
 def test_split_without_labels_defaults_to_positive_only():
