@@ -16,10 +16,6 @@ class ComfyUIPromptList:
                 ),
             },
             "optional": {
-                "prompt_negative_default": (
-                    "STRING",
-                    {"default": ""},
-                ),
                 "prompt_positive_suffix": (
                     "STRING",
                     {"default": ""},
@@ -33,6 +29,10 @@ class ComfyUIPromptList:
                     {"default": ""},
                 ),
                 "prompt_negative_prefix": (
+                    "STRING",
+                    {"default": ""},
+                ),
+                "prompt_negative_default": (
                     "STRING",
                     {"default": ""},
                 ),

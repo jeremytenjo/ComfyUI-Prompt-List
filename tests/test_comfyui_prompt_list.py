@@ -18,11 +18,11 @@ def test_input_types_contains_text_and_divider():
     assert list(required.keys()) == ["text", "divider"]
     assert required["divider"][1]["default"] == "**"
     assert list(optional.keys()) == [
-        "prompt_negative_default",
         "prompt_positive_suffix",
         "prompt_positive_prefix",
         "prompt_negative_suffix",
         "prompt_negative_prefix",
+        "prompt_negative_default",
     ]
     assert optional["prompt_negative_default"][1]["default"] == ""
     assert optional["prompt_positive_suffix"][1]["default"] == ""
