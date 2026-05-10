@@ -16,19 +16,7 @@ class ComfyUIPromptList:
                 ),
             },
             "optional": {
-                "prompt_positive_suffix": (
-                    "STRING",
-                    {"default": ""},
-                ),
                 "prompt_positive_prefix": (
-                    "STRING",
-                    {"default": ""},
-                ),
-                "prompt_negative_suffix": (
-                    "STRING",
-                    {"default": ""},
-                ),
-                "prompt_negative_prefix": (
                     "STRING",
                     {"default": ""},
                 ),
@@ -92,34 +80,25 @@ class ComfyUIPromptList:
         text: str,
         divider: str = "**",
         prompt_negative_default: str = "",
-        prompt_positive_suffix: str = "",
         prompt_positive_prefix: str = "",
-        prompt_negative_suffix: str = "",
-        prompt_negative_prefix: str = "",
     ) -> Tuple[list[str], list[str]]:
         normalized = (text or "").replace("\r\n", "\n").replace("\r", "\n")
         active_divider = divider if divider else "**"
         items = [chunk.strip() for chunk in normalized.split(active_divider)]
         items = [item for item in items if item]
-        positive_suffix = prompt_positive_suffix or ""
         positive_prefix = prompt_positive_prefix or ""
-        negative_suffix = prompt_negative_suffix or ""
-        negative_prefix = prompt_negative_prefix or ""
 
         if not items:
             fallback_negative = prompt_negative_default or ""
             return (
-                [positive_prefix + positive_suffix],
-                [negative_prefix + fallback_negative + negative_suffix],
+                [positive_prefix],
+                [fallback_negative],
             )
 
         parsed = [self._parse_block(item) for item in items]
-        positive = [positive_prefix + pair[0] + positive_suffix for pair in parsed]
+        positive = [positive_prefix + pair[0] for pair in parsed]
         fallback_negative = prompt_negative_default or ""
-        negative = [
-            negative_prefix + (pair[1] if pair[1] else fallback_negative) + negative_suffix
-            for pair in parsed
-        ]
+        negative = [pair[1] if pair[1] else fallback_negative for pair in parsed]
 
         return (positive, negative)
 
