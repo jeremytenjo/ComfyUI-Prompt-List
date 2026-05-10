@@ -20,6 +20,14 @@ class ComfyUIPromptList:
                     "STRING",
                     {"default": ""},
                 ),
+                "prompt_positive_suffix": (
+                    "STRING",
+                    {"default": ""},
+                ),
+                "prompt_positive_prefix": (
+                    "STRING",
+                    {"default": ""},
+                ),
             },
         }
 
@@ -76,17 +84,21 @@ class ComfyUIPromptList:
         text: str,
         divider: str = "**",
         default_negative_prompt: str = "",
+        prompt_positive_suffix: str = "",
+        prompt_positive_prefix: str = "",
     ) -> Tuple[list[str], list[str]]:
         normalized = (text or "").replace("\r\n", "\n").replace("\r", "\n")
         active_divider = divider if divider else "**"
         items = [chunk.strip() for chunk in normalized.split(active_divider)]
         items = [item for item in items if item]
+        positive_suffix = prompt_positive_suffix or ""
+        positive_prefix = prompt_positive_prefix or ""
 
         if not items:
-            return ([""], [default_negative_prompt or ""])
+            return ([positive_prefix + positive_suffix], [default_negative_prompt or ""])
 
         parsed = [self._parse_block(item) for item in items]
-        positive = [pair[0] for pair in parsed]
+        positive = [positive_prefix + pair[0] + positive_suffix for pair in parsed]
         fallback_negative = default_negative_prompt or ""
         negative = [pair[1] if pair[1] else fallback_negative for pair in parsed]
 

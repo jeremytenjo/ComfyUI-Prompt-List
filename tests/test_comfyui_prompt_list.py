@@ -17,8 +17,14 @@ def test_input_types_contains_text_and_divider():
 
     assert list(required.keys()) == ["text", "divider"]
     assert required["divider"][1]["default"] == "**"
-    assert list(optional.keys()) == ["default_negative_prompt"]
+    assert list(optional.keys()) == [
+        "default_negative_prompt",
+        "prompt_positive_suffix",
+        "prompt_positive_prefix",
+    ]
     assert optional["default_negative_prompt"][1]["default"] == ""
+    assert optional["prompt_positive_suffix"][1]["default"] == ""
+    assert optional["prompt_positive_prefix"][1]["default"] == ""
 
 
 def test_split_basic_default_separator():
@@ -53,6 +59,13 @@ def test_split_empty_input_falls_back_to_empty_strings():
     node = ComfyUIPromptList()
     positive, negative = node.split("   \r\n  **   \n")
     assert positive == [""]
+    assert negative == [""]
+
+
+def test_split_empty_input_applies_positive_suffix():
+    node = ComfyUIPromptList()
+    positive, negative = node.split("   \r\n  **   \n", prompt_positive_suffix=", cinematic")
+    assert positive == [", cinematic"]
     assert negative == [""]
 
 
@@ -123,6 +136,46 @@ def test_split_without_labels_defaults_to_positive_only():
     node = ComfyUIPromptList()
     positive, negative = node.split("plain prompt text")
     assert positive == ["plain prompt text"]
+    assert negative == [""]
+
+
+def test_split_applies_positive_suffix_to_multiple_unlabeled_items():
+    node = ComfyUIPromptList()
+    positive, negative = node.split("a**b", prompt_positive_suffix=", ultra detailed")
+    assert positive == ["a, ultra detailed", "b, ultra detailed"]
+    assert negative == ["", ""]
+
+
+def test_split_applies_positive_suffix_to_labeled_items():
+    node = ComfyUIPromptList()
+    text = "positive: prompt a\nnegative: neg a**positive: prompt b\nnegative: neg b"
+    positive, negative = node.split(text, prompt_positive_suffix=", film grain")
+    assert positive == ["prompt a, film grain", "prompt b, film grain"]
+    assert negative == ["neg a", "neg b"]
+
+
+def test_split_positive_suffix_is_literal_append():
+    node = ComfyUIPromptList()
+    positive, negative = node.split("prompt", prompt_positive_suffix="SUFFIX")
+    assert positive == ["promptSUFFIX"]
+    assert negative == [""]
+
+
+def test_split_applies_positive_prefix_to_multiple_items():
+    node = ComfyUIPromptList()
+    positive, negative = node.split("a**b", prompt_positive_prefix="::PREFIX")
+    assert positive == ["::PREFIXa", "::PREFIXb"]
+    assert negative == ["", ""]
+
+
+def test_split_applies_positive_suffix_and_prefix_in_order():
+    node = ComfyUIPromptList()
+    positive, negative = node.split(
+        "prompt",
+        prompt_positive_suffix=", detail",
+        prompt_positive_prefix="::PREFIX",
+    )
+    assert positive == ["::PREFIXprompt, detail"]
     assert negative == [""]
 
 
